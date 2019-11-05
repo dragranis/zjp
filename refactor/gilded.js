@@ -32,12 +32,17 @@ class Item {
          if(product.sellIn<0) return 0;
      }
       
+     decrease_days(product){
+        (this.is_legendary(product)) ? null : product.sellIn--;
+     }
+      
     changed_by(product){
         let value = 1;
         if(this.days_passed(product)) value++;
         if(this.is_increasing_quality(product)) value*=-1;
         if(this.is_backstage(product)) value = this.backstage_value(product);
         if(this.is_conjured(product)) value*=2;
+        return value;
     }
     
     days_passed(product){
@@ -79,6 +84,7 @@ class Item {
             for(var j in this.items){
                document.writeln(this.items[j].name+","+this.items[j].sellIn+","+this.items[j].quality+"<br/>");
                 this.change_quality(this.items[j]);
+                this.decrease_days(this.items[j]);
             }
         }
      }
