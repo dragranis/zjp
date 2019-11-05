@@ -56,6 +56,10 @@ class Item {
         (product.quality<=50) ? null : product.quality=50;
     }
       
+    is_backstage(product){
+        return product.name.includes("Backstage");   
+    }
+      
     is_legendary(product){
         return product.name.includes("Sulfuras");   
     }
