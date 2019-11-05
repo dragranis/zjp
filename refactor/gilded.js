@@ -6,6 +6,7 @@ class Item {
     }
   }
 
+
   
   var shop_items = [
       new Item("+5 Dexterity Vest",10,20),
@@ -24,80 +25,55 @@ class Item {
     constructor(items=[]){
       this.items = items;
     }
-    updateQuality() {
-      for (var i = 0; i < this.items.length; i++) {
-        if (this.items[i].name != 'Aged Brie' && this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-          if (this.items[i].quality > 0) {
-            if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-              this.items[i].quality = this.items[i].quality - 1;
-            }
-            if(this.items[i].name.includes("Conjured")){
-                this.items[i].quality--;
-            }
-          }
-        } else {
-          if (this.items[i].quality < 50) {
-            this.items[i].quality = this.items[i].quality + 1;
-            if (this.items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-              if (this.items[i].sellIn < 11) {
-                if (this.items[i].quality < 50) {
-                  this.items[i].quality = this.items[i].quality + 1;
-                }
-              }
-              if (this.items[i].sellIn < 6) {
-                if (this.items[i].quality < 50) {
-                  this.items[i].quality = this.items[i].quality + 1;
-                }
-              }
-            }
-          }
-        }
-        if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-          this.items[i].sellIn = this.items[i].sellIn - 1;
-        }
-        if (this.items[i].sellIn < 0) {
-          if (this.items[i].name != 'Aged Brie') {
-            if (this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-              if (this.items[i].quality > 0) {
-                if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                  this.items[i].quality = this.items[i].quality - 1;
-                }
-                if(this.items[i].name.includes("Conjured")){
-                    this.items[i].quality--;
-                }
-              }
-            } else {
-              this.items[i].quality = this.items[i].quality - this.items[i].quality;
-            }
-          } else {
-            if (this.items[i].quality < 50) {
-              this.items[i].quality = this.items[i].quality + 1;
-            }
-          }
-        }
-      }
-  
-      return this.items;
+      
+     backstage_value(product){
+         if(product.sellIn<=10)   return -2;
+         if(product.sellIn<=5) return -3;
+         if(product.sellIn<0) return 0;
+     }
+      
+    changed_by(product){
+        let value = 1;
+        if(this.days_passed(product)) value++;
+        if(this.is_increasing_quality(product)) value*=-1;
+        if(this.is_backstage(product)) value = this.backstage_value(product);
+        if(this.is_conjured(product)) value*=2;
     }
     
-    write_items(wanted_days){
-        
-        var name, quality, sellin;
-        var day = 0;
-        while(day<wanted_days){
-            document.writeln("<br/>DAY "+day+"<br/>");
-            document.writeln("Name Quality Sellin<br/>");
-            for(var i in this.items){
-                name = this.items[i].name;
-                quality = this.items[i].quality;
-                sellin = this.items[i].sellIn;
-                
-                document.writeln(name+" "+quality+" "+sellin+" <br/>");
-            }
-            day++;
-            this.updateQuality();
-      }
+    days_passed(product){
+        return product.sellIn && product.sellIn>=0;      
     }
+      
+    decrease_quality(product){
+        product.quality--;
+    }
+      
+    is_negative(product){
+       (product.quality<0) ? product.quality = 0 : null;   
+    }
+    
+    is_maximum(product){
+        (product.quality<=50) ? null : product.quality=50;
+    }
+      
+    is_legendary(product){
+        return product.name.includes("Sulfuras");   
+    }
+      
+    is_conjured(product){
+        return product.name.includes("Conjured");
+    }
+    
+    is_increasing_quality(product){
+        return product.name.includes("Brie") || product.name.includes("Backstage");
+    }
+      
+      
+     update(days){
+        for(var i=1;i<=days;i++){
+            
+        }
+     }
   }
   
   
