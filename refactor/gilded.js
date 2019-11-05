@@ -44,8 +44,8 @@ class Item {
         return product.sellIn && product.sellIn>=0;      
     }
       
-    decrease_quality(product){
-        product.quality--;
+    change_quality(product){
+        product.quality-=this.changed_by(product);
     }
       
     is_negative(product){
@@ -71,7 +71,11 @@ class Item {
       
      update(days){
         for(var i=1;i<=days;i++){
-            
+            document.writeln("Day: "+i+"<br/>");
+            for(var j in this.products){
+               document.writeln(this.products[j].name+","+this.products[j].sellIn+","+this.products[j].quality+"<br/>");
+                this.change_quality(product[j]);
+            }
         }
      }
   }
