@@ -81,10 +81,13 @@ class Item {
      update(days){
         for(var i=1;i<=days;i++){
             document.writeln("Day: "+i+"<br/>");
+            document.writeln("Name, sellIn, Quality<br/>");
             for(var j in this.items){
                document.writeln(this.items[j].name+","+this.items[j].sellIn+","+this.items[j].quality+"<br/>");
                 this.change_quality(this.items[j]);
                 this.decrease_days(this.items[j]);
+                this.is_maximum(this.items[j]);
+                this.is_negative(this.items[j]);
             }
         }
      }
