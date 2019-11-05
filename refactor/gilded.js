@@ -46,7 +46,7 @@ class Item {
     }
     
     days_passed(product){
-        return product.sellIn && product.sellIn>=0;      
+        return product.sellIn && product.sellIn<0;      
     }
       
     change_quality(product){
