@@ -27,6 +27,7 @@ class Item {
     }
       
      backstage_value(product){
+         if(product.sellIn>10) return -1;
          if(product.sellIn<=10)   return -2;
          if(product.sellIn<=5) return -3;
          if(product.sellIn<0) return 0;
