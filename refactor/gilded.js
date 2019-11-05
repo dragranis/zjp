@@ -72,8 +72,8 @@ class Item {
      update(days){
         for(var i=1;i<=days;i++){
             document.writeln("Day: "+i+"<br/>");
-            for(var j in this.products){
-               document.writeln(this.products[j].name+","+this.products[j].sellIn+","+this.products[j].quality+"<br/>");
+            for(var j in this.items){
+               document.writeln(this.items[j].name+","+this.items[j].sellIn+","+this.items[j].quality+"<br/>");
                 this.change_quality(product[j]);
             }
         }
