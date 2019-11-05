@@ -74,7 +74,7 @@ class Item {
             document.writeln("Day: "+i+"<br/>");
             for(var j in this.items){
                document.writeln(this.items[j].name+","+this.items[j].sellIn+","+this.items[j].quality+"<br/>");
-                this.change_quality(product[j]);
+                this.change_quality(this.items[j]);
             }
         }
      }
