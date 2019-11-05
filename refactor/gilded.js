@@ -40,8 +40,13 @@ class Item {
         let value = 1;
         if(this.days_passed(product)) value++;
         if(this.is_increasing_quality(product)) value*=-1;
-        if(this.is_backstage(product)) value = this.backstage_value(product);
+        if(this.is_backstage(product)){
+            value = this.backstage_value(product);
+            console.log(value);
+            
+        }
         if(this.is_conjured(product)) value*=2;
+        if(this.is_legendary(product)) value = 0;
         return value;
     }
     
@@ -80,7 +85,7 @@ class Item {
       
      update(days){
         for(var i=1;i<=days;i++){
-            document.writeln("Day: "+i+"<br/>");
+            document.writeln("<br/>Day: "+i+"<br/>");
             document.writeln("Name, sellIn, Quality<br/>");
             for(var j in this.items){
                document.writeln(this.items[j].name+","+this.items[j].sellIn+","+this.items[j].quality+"<br/>");
