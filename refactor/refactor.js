@@ -117,5 +117,3 @@ class Shop{
     }
 
 }
-
-var sklep = new Shop(shop_items);
