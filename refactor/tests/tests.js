@@ -2,22 +2,24 @@
 
 
 QUnit.test("gilded rose tests", function(assert) {
-	let initial = JSON.parse(JSON.stringify(shop_items));
-	change(10);
-
-    for (var i in shop_items) {
-        assert.ok(shop_items[i].quality >= 0, shop_items[i].name + " || quality is not negative");
-        assert.ok(shop_items[i].quality <= 50, shop_items[i].name + " || quality is not over maximum");
-        if (shop_items[i].is_backstage() && shop_items[i].sellIn < 0) {
-            assert.ok(shop_items[i].quality == 0, shop_items[i].name + " || ticket become worthless")
+    let my_shop = new Shop(shop_items);
+    let initial = JSON.parse(JSON.stringify(my_shop))
+    my_shop.update(10);
+    for(var i in my_shop.products){
+        assert.ok(my_shop.products[i].quality>=0, my_shop.products[i].name+" || is not negative");
+        assert.ok(my_shop.products[i].quality<=50, my_shop.products[i].name+" || is not over maximum");
+        if(my_shop.products[i] instanceof Backstage && my_shop.products[i].sellIn<0){
+           assert.ok(my_shop.products[i].quality==0,my_shop.products[i].name+" || quality set to 0 on negative sellIn ")
         }
-        if (shop_items[i].is_legendary()) {
-            assert.ok(shop_items[i].sellIn == 0 || shop_items[i].sellIn == -1, shop_items[i].name + " || hadn't changed it's  sellIn value")
+        if(my_shop.products[i] instanceof Legendary){
+            assert.ok(my_shop.products[i].sellIn == initial.products[i].sellIn, my_shop.products[i].name+" || is not changing it's sellIn")
         }
-		if(shop_items[i].is_increasing_quality()){
-			assert.ok(shop_items[i].quality>initial[1].quality, shop_items[i].name+" || increased quality as expected");
-		}
+        if(my_shop.products[i] instanceof Cheese){
+            assert.ok(my_shop.products[i].quality>initial.products[i].quality,my_shop.products[i].name+" || increasing quality correctly")
+        }
 
+        if(my_shop.products[i] instanceof Conjured){
+            assert.ok(my_shop.products[i].quality<=initial.products[i].quality-2,my_shop.products[i].name+" || conjured is working")
+        }
     }
-
 });

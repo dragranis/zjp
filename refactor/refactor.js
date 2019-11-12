@@ -1,98 +1,121 @@
-class Item {
-    constructor(name, sellIn, quality) {
+class Item{
+    constructor(name,sellIn,quality){
         this.name = name;
         this.sellIn = sellIn;
         this.quality = quality;
     }
 
-    backstage_decrease() {
-        if (this.sellIn > 10) return -1;
-        if (this.sellIn >= 5 && this.sellIn <= 10) return -2;
-        if (this.sellIn >= 0 && this.sellIn <= 4) return -3;
-
-        else {
-            return this.quality;
-        };
+    correctQuality(){
+        if(this.quality<0) this.quality=0;
+        if(this.quality>50) this.quality=50;
     }
 
-    changed_quality() {
-        let value = 1;
-        if (this.is_legendary()) value = 0;
-        if (this.is_backstage()) value = this.backstage_decrease();
-        if (this.is_increasing_quality()) value *= -1;
-        if (this.past_sellIn()) value *= 2;
-        if (this.is_conjured()) value *= 2;
-        return value;
+    pastSellIn(){
+        return this.sellIn && this.sellIn<0;
     }
 
-    correct() {
-        this.minimum_quality();
-        this.maximum_quality();
+    decreaseDays(){
+        this.sellIn--;
     }
 
-    decrease_days() {
-        if (!this.is_legendary()) this.sellIn--;
-    }
-
-    decrease_quality() {
-        this.quality -= this.changed_quality();
-    }
-
-    is_backstage() {
-        return this.name.includes("Backstage");
-    }
-
-    is_conjured() {
-        return this.name.includes("Conjured");
-    }
-
-    is_increasing_quality() {
-        return this.name.includes("Brie");
-    }
-
-    is_legendary() {
-        return this.name.includes("Sulfuras");
-    }
-
-    minimum_quality() {
-        this.quality < 0 ? (this.quality = 0) : null;
-    }
-
-    maximum_quality() {
-        this.quality > 50 ? (this.quality = 50) : null;
-    }
-
-    past_sellIn() {
-        return this.sellIn && this.sellIn < 0;
-    }
-
-    write() {
+    write(){
         let list = document.getElementById("item_list");
         list.innerHTML += this.name + " | sellIn: " + this.sellIn + " | Quality: " + this.quality + "<br/>";
     }
 }
 
-var shop_items = [
-    new Item("+5 Dexterity Vest", 10, 20),
-    new Item("Aged Brie", 2, 0),
-    new Item("Elixir of the Mongoose", 5, 7),
-    new Item("Sulfuras, Hand of Ragnaros", 0, 80),
-    new Item("Sulfuras, Hand of Ragnaros", -1, 80),
-    new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20),
-    new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
-    new Item("Backstage passes to a TAFKAL80ETC concert", 5, 49),
-    new Item("Conjured Mana Cake", 4, 40)
-];
+class Standard extends Item{
+    constructor(name,sellIn,quality){
+        super(name,sellIn,quality);
+    }
 
-
-function change(days) {
-    for (var i = 1; i <= days; i++) {
-        $("#item_list").append("<br/>DAY: " + i + "<br/><br/>");
-        for (var j in shop_items) {
-            shop_items[j].decrease_days();
-            shop_items[j].decrease_quality();
-            shop_items[j].correct();
-            shop_items[j].write();
-        }
+    changeQuality(){
+        if(super.pastSellIn()) this.quality-=2;
+        else this.quality--;
     }
 }
+
+class Backstage extends Item{
+    constructor(name,sellIn,quality){
+        super(name,sellIn,quality);
+    }
+
+    changeQuality(){
+        if(this.sellIn>10) this.quality++;
+        else if(this.sellIn>=5 && this.sellIn<=10) this.quality+=2;
+        else if(this.sellIn>=0 && this.sellIn<=4) this.quality+=3;
+        else this.quality=0;
+
+    }
+}
+
+class Legendary extends Item{
+    constructor(name,sellIn,quality){
+        super(name,sellIn,quality);
+    }
+    
+    changeQuality(){
+        return false;
+    }
+
+    decreaseDays(){
+        return false;
+    }
+}
+
+class Cheese extends Item{
+    constructor(name,sellIn,quality){
+        super(name,sellIn,quality);
+    }
+
+    changeQuality(){
+        if(super.pastSellIn()) this.quality+=2;
+        else this.quality++;
+    }
+}
+
+class Conjured extends Item{
+    constructor(name,sellIn,quality){
+        super(name,sellIn,quality);
+    }
+
+    changeQuality(){
+        if(super.pastSellIn()) this.quality-=4;
+        else this.quality-=2;
+    }
+}
+
+var shop_items = [
+    new Standard("+5 Dexterity Vest",10,20),
+    new Cheese("Aged Brie",2,0),
+    new Standard("Elixir of the Mongoose",5,7),
+    new Legendary("Sulfuras, Hand of Ragnaros",0,80),
+    new Legendary("Sulfuras, Hand of Ragnaros",-1,80),
+    new Backstage("Backstage passes to a TAFKAL80ETC concert",15,20),
+    new Backstage("Backstage passes to a TAFKAL80ETC concert",10,7),
+    new Backstage("Backstage passes to a TAFKAL80ETC concert",5,10),
+    new Conjured("Conjured Mana Cake",12,50)
+]
+
+class Shop{
+    constructor(products){
+        this.products = products;
+        this.days = 0;
+    }
+
+    update(times){
+        for(var i=1;i<=times;i++){
+            for(var j in this.products){
+                this.products[j].decreaseDays();
+                this.products[j].changeQuality();
+                this.products[j].correctQuality();
+                this.products[j].write();
+               
+            }
+            $("#item_list").append("<br/><br/>");
+        }
+    }
+
+}
+
+var sklep = new Shop(shop_items);
